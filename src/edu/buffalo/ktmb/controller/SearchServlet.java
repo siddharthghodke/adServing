@@ -42,16 +42,16 @@ public class SearchServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String userQuery = request.getParameter("queryInput");
-		String id = request.getParameter("id");
-		String name = request.getParameter("name");
-		String salary = request.getParameter("salary");
-		TestDAO td = new TestDAO();
-		td.addEmployee(Integer.parseInt(id), name, Integer.parseInt(salary));
-		SearchServer s = new SearchServer();
-		List<QueryResult> bean = s.getResult(userQuery);
-		System.out.println();
-		request.setAttribute("result", bean);
-		request.getRequestDispatcher("/WEB-INF/jsp/result.jsp").forward(request, response);
+		String bidAmt = request.getParameter("bidAmt");
+		String advLink = request.getParameter("advLink");
+		System.out.println(userQuery +bidAmt+ advLink);
+	//	TestDAO td = new TestDAO();
+	//	td.addEmployee(Integer.parseInt(id), name, Integer.parseInt(salary));
+//		SearchServer s = new SearchServer();
+	//	List<QueryResult> bean = s.getResult(userQuery);
+//		System.out.println();
+	//	request.setAttribute("result", bean);
+	//	request.getRequestDispatcher("/WEB-INF/jsp/result.jsp").forward(request, response);
 	}
 
 }
