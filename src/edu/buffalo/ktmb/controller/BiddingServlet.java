@@ -11,11 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.buffalo.ktmb.service.BidService;
 
-/**
- * @author shashank
- *
- */
+
 @WebServlet("/BiddingServlet")
 public class BiddingServlet extends HttpServlet {
 
@@ -23,6 +21,8 @@ public class BiddingServlet extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private static int sessionId = 1;
+	private BidService bidService = new BidService();
 
 	/**
 	 * 
@@ -47,15 +47,30 @@ public class BiddingServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		String postRequest = request.getParameter("postRequest");
 		
-		String userQuery = request.getParameter("queryInput");
-		String bidAmt = request.getParameter("bidAmt");
-		String advLink = request.getParameter("advLink");
-		System.out.println(userQuery +bidAmt+ advLink);
-		
-		if(userQuery!=null && bidAmt!=null && advLink!=null)
-		request.setAttribute("result", "success");
-		request.getRequestDispatcher("/EnterBid.jsp").forward(request, response);
+		switch(postRequest) {
+		case "postBid":
+			String query = request.getParameter("queryInput");
+			String bidAmt = request.getParameter("bidAmt");
+			String advLink = request.getParameter("advLink");
+			//System.out.println(userQuery +bidAmt+ advLink);
+			
+			if(query != null && bidAmt != null && advLink != null) {
+				bidService.addBid(Integer.parseInt(bidAmt), advLink, query, sessionId);
+			}
+			
+				
+			request.setAttribute("result", "success");
+			request.getRequestDispatcher("/EnterBid.jsp").forward(request, response);
+			break;
+			
+		case "updateBids":
+			bidService.updateWinningBids(sessionId++);
+			request.setAttribute("result", "success");
+			request.getRequestDispatcher("/UpdateBids.jsp").forward(request, response);
+			break;
+		}
 	}
 
 

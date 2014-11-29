@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.buffalo.ktmb.bean.Query;
+import edu.buffalo.ktmb.service.QueryService;
+
 @WebServlet("/KeywordResultServlet")
 public class KeywordResultServlet extends HttpServlet {
 
@@ -15,6 +18,8 @@ public class KeywordResultServlet extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private QueryService queryService = new QueryService();
+	
 	public KeywordResultServlet()
 	{
 		super();
@@ -34,10 +39,14 @@ public class KeywordResultServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String keyword = request.getParameter("keyword");
-		if(keyword!=null)
-			request.setAttribute("result", "success");
-			request.getRequestDispatcher("/SearchKeyword.jsp").forward(request, response);
+		String queryKeyword = request.getParameter("keyword");
+		Query query = null;
+		if(queryKeyword != null) {
+			query = queryService.getQueryInfo(queryKeyword);
+		}
+		request.setAttribute("result", "success");
+		request.setAttribute("query", query);
+		request.getRequestDispatcher("/SearchKeyword.jsp").forward(request, response);
 	}
 	
 

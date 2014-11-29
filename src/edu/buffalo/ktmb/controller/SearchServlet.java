@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import edu.buffalo.ktmb.bean.QueryResult;
-import edu.buffalo.ktmb.dao.TestDAO;
 import edu.buffalo.ktmb.server.SearchServer;
+
 
 /**
  * Servlet implementation class SearchServlet
@@ -31,27 +31,29 @@ public class SearchServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	/*protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-
+		String userQuery = request.getParameter("userQuery");
+		System.out.println("Query"+userQuery);
+		SearchServer s = new SearchServer();
+		List<QueryResult> bean = s.getResult(userQuery);
+		request.setAttribute("result", bean);
+		request.getRequestDispatcher("/WEB-INF/result.jsp").forward(request, response);
+	//	response.setHeader("Pragma", "none");
 	}
-
+*/
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String userQuery = request.getParameter("queryInput");
-		String bidAmt = request.getParameter("bidAmt");
-		String advLink = request.getParameter("advLink");
-		System.out.println(userQuery +bidAmt+ advLink);
-	//	TestDAO td = new TestDAO();
-	//	td.addEmployee(Integer.parseInt(id), name, Integer.parseInt(salary));
-//		SearchServer s = new SearchServer();
-	//	List<QueryResult> bean = s.getResult(userQuery);
-//		System.out.println();
-	//	request.setAttribute("result", bean);
-	//	request.getRequestDispatcher("/WEB-INF/jsp/result.jsp").forward(request, response);
+		String userQuery = request.getParameter("userQuery");
+		System.out.println("Query"+userQuery);
+		SearchServer s = new SearchServer();
+		List<QueryResult> bean = s.getResult(userQuery);
+		request.setAttribute("result", bean);
+		request.getRequestDispatcher("/HomePage.jsp").forward(request, response);
+		//response.setHeader("Pragma", "none");
 	}
 
 }

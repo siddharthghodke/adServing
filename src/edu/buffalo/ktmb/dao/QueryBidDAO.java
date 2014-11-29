@@ -258,7 +258,7 @@ public class QueryBidDAO {
 	public void updateWinningBids(int sessionId) {
 		try {
 			con = DBManager.getInstance().getConnection();
-			String sql = "SELECT * FROM bid WHERE sessionId = ? ORDER BY query_id";
+			String sql = "SELECT * FROM bid WHERE session_id = ? ORDER BY query_id";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, sessionId);
 			rs = pstmt.executeQuery();
@@ -295,10 +295,16 @@ public class QueryBidDAO {
 				int bidId = rs.getInt("bid_id");
 				int bidAmount = rs.getInt("bid_amount");
 				if(bidAmount > first) {
+					third = second;
+					second = first;
 					first = bidAmount;
+					bidId3 = bidId2;
+					bidId2 = bidId1;
 					bidId1 = bidId;
 				} else if (bidAmount > second) {
+					third = second;
 					second = bidAmount;
+					bidId3 = bidId2;
 					bidId2 = bidId;
 				} else if (bidAmount > third) {
 					third = bidAmount;
@@ -306,18 +312,33 @@ public class QueryBidDAO {
 				}
 			}
 			
+			if(bidId1 != -1) {
+				QueryTopBids qtb = new QueryTopBids();
+				qtb.queryId = queryId;
+				qtb.bidId1 = bidId1;
+				qtb.bidId2 = bidId2;
+				qtb.bidId3 = bidId3;
+				qtbList.add(qtb);
+			}
+			
 			String deleteSQL = "DELETE FROM query_top_bids";
 			stmt = con.createStatement();
 			stmt.executeUpdate(deleteSQL);
 			
-			sql = "INSERT INTO query_top_bids VALUES(?, ?, ?, ?)";
-			pstmt = con.prepareStatement(sql);
+			String updateQueryTopBids = "INSERT INTO query_top_bids VALUES(?, ?, ?, ?)";
+			String updateQueryBid = "INSERT INTO query_bid VALUES(?,?)";
+			pstmt = con.prepareStatement(updateQueryTopBids);
+			PreparedStatement pstmt2 = con.prepareStatement(updateQueryBid);
 			for(QueryTopBids qtb: qtbList) {
 				pstmt.setInt(1, qtb.queryId);
 				pstmt.setInt(2, qtb.bidId1);
 				pstmt.setInt(3, qtb.bidId2);
 				pstmt.setInt(4, qtb.bidId3);
 				pstmt.executeUpdate();
+				
+				pstmt2.setInt(1, qtb.queryId);
+				pstmt2.setInt(2, qtb.bidId1);
+				pstmt2.executeUpdate();
 			}
 			
 		} catch (Exception e) {
