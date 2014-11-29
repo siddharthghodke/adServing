@@ -9,7 +9,7 @@
 </head>
 <body background="/WEB-INF/img/background.jpg" >
 <div id="formDiv">
-<form action="SearchServlet" method="post" name="queryForm" id="queryForm" onsubmit="successMsg()">
+<form action="BiddingServlet" method="post" name="queryForm" id="queryForm">
 <table>
 <tr>
 <td>Keyword:</td>
@@ -29,11 +29,18 @@
 </div>
 <div id="resultsDiv">
 </div>
-<script>
-function successMsg() {
+<%
+String success="failure";
+success= (String)request.getAttribute("result");
+if("success".equals(success))
+{
+%>
+  <script type="text/javascript">
     alert("Your Bid is placed! Thank You!");
     document.forms['queryForm'].reset();
+    </script>
+    <% 
 }
-</script>
+    %>
 </body>
 </html>
