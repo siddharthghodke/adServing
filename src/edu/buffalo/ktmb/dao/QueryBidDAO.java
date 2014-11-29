@@ -24,7 +24,7 @@ public class QueryBidDAO {
 	 * @param query
 	 * @return list of top 3 ads for the query
 	 */
-	public List<String> getAdForQuery(String query) {
+	public List<String> getAdsForQuery(String query) {
 		try {
 			con = DBManager.getInstance().getConnection();
 
@@ -118,10 +118,10 @@ public class QueryBidDAO {
 	 * Increment ad hits for given query
 	 * @param query
 	 */
-	public void incrementAdHitForQuery(String query) {
+	public void incrementAdHitsForQuery(String query) {
 		try {
 			con = DBManager.getInstance().getConnection();
-			String sql = "SELECT * FROM query WHERE query = ?";
+			String sql = "SELECT query_id, ad_hits FROM query WHERE query = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, query);
 			rs = pstmt.executeQuery();
@@ -257,6 +257,68 @@ public class QueryBidDAO {
 	 */
 	public void updateWinningBids(int sessionId) {
 		try {
+			con = DBManager.getInstance().getConnection();
+			String sql = "SELECT * FROM bid WHERE sessionId = ? ORDER BY query_id";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, sessionId);
+			rs = pstmt.executeQuery();
+
+			class QueryTopBids {
+				int queryId;
+				int bidId1;
+				int bidId2;
+				int bidId3;
+			}
+			
+			List<QueryTopBids> qtbList = new ArrayList<QueryTopBids>();
+			
+			int first, second, third;
+			int bidId1, bidId2, bidId3;
+			first = second = third = -1;
+			bidId1 = bidId2 = bidId3 = -1;
+			int queryId = -1;
+			while(rs.next()) {
+				int lastQueryId = queryId;
+				queryId = rs.getInt("query_id");
+				if(queryId != lastQueryId) {
+					if(bidId1 != -1) {
+						QueryTopBids qtb = new QueryTopBids();
+						qtb.queryId = lastQueryId;
+						qtb.bidId1 = bidId1;
+						qtb.bidId2 = bidId2;
+						qtb.bidId3 = bidId3;
+						qtbList.add(qtb);
+					}
+					bidId1 = bidId2 = bidId3 = -1;
+					first = second = third = -1;
+				}
+				int bidId = rs.getInt("bid_id");
+				int bidAmount = rs.getInt("bid_amount");
+				if(bidAmount > first) {
+					first = bidAmount;
+					bidId1 = bidId;
+				} else if (bidAmount > second) {
+					second = bidAmount;
+					bidId2 = bidId;
+				} else if (bidAmount > third) {
+					third = bidAmount;
+					bidId3 = bidId;
+				}
+			}
+			
+			String deleteSQL = "DELETE FROM query_top_bids";
+			stmt = con.createStatement();
+			stmt.executeUpdate(deleteSQL);
+			
+			sql = "INSERT INTO query_top_bids VALUES(?, ?, ?, ?)";
+			pstmt = con.prepareStatement(sql);
+			for(QueryTopBids qtb: qtbList) {
+				pstmt.setInt(1, qtb.queryId);
+				pstmt.setInt(2, qtb.bidId1);
+				pstmt.setInt(3, qtb.bidId2);
+				pstmt.setInt(4, qtb.bidId3);
+				pstmt.executeUpdate();
+			}
 			
 		} catch (Exception e) {
 			
@@ -309,8 +371,11 @@ public class QueryBidDAO {
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, query);
 			rs = pstmt.executeQuery();
-			rs.first();
-			return rs.getInt("query_id");
+			if(rs.next()) {
+				return rs.getInt("query_id");
+			} else {
+				return -1;
+			}
 		} catch (Exception e) {
 			
 		} finally {
@@ -325,7 +390,7 @@ public class QueryBidDAO {
 	 * Used when a bid is accepted for a query 
 	 * which is not already present in table
 	 * @param query
-	 * @return
+	 * @return queryId of the inserted query
 	 */
 	public int insertQuery(String query) {
 		try {

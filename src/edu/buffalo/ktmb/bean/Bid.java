@@ -8,6 +8,17 @@ public class Bid {
 	private int queryId;
 	private int sessionId;
 	
+	public Bid() {
+		
+	}
+	
+	public Bid(int bidAmount, String adUrl, int queryId, int sessionId) {
+		this.bidAmount = bidAmount;
+		this.adUrl = adUrl;
+		this.queryId = queryId;
+		this.sessionId = sessionId;
+	}
+	
 	public int getBidId() {
 		return bidId;
 	}
