@@ -35,16 +35,9 @@ public class KeywordResultServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String keyword = request.getParameter("keyword");
-		
-	//	TestDAO td = new TestDAO();
-	//	td.addEmployee(Integer.parseInt(id), name, Integer.parseInt(salary));
-//		SearchServer s = new SearchServer();
-	//	List<QueryResult> bean = s.getResult(userQuery);
-//		System.out.println();
-	//	request.setAttribute("result", bean);
-		System.out.println(keyword);
-		
-	//	request.getRequestDispatcher("/WEB-INF/jsp/result.jsp").forward(request, response);
+		if(keyword!=null)
+			request.setAttribute("result", "success");
+			request.getRequestDispatcher("/SearchKeyword.jsp").forward(request, response);
 	}
 	
 
