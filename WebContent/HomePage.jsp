@@ -30,17 +30,17 @@
 	</div>
 
 	<div
-		style="float: left; width: 60%; word-wrap: break-word; overflow: hidden">
+		style="float: left; width: 60%; word-wrap: break-word; overflow: hidden;">
 		<ul style="list-style-type: none;">
 			<%
 				if (resultSet != null) {
 					for (int i = 0; i < resultSet.size(); i++) {
 			%>
-			<li><a href="<%=resultSet.get(i).getUrl() %>"><%=resultSet.get(i).getTitle() %></a></li>
+			<li><a href="<%=resultSet.get(i).getUrl() %>"><%=resultSet.get(i).getTitle()%></a></li>
 			<li><%=resultSet.get(i).getUrl() %></li>
 			<li><%=resultSet.get(i).getLead_paragraph() %></li>
-			<br>
-			<br>
+			<li />
+			<li />
 			<%
 				}
 			}
@@ -48,8 +48,21 @@
 		</ul>
 	</div>
 
-	<div style="float: right; width: 35%; word-wrap: break-word">
-		whdvhwebhcwehjbehisdhcuwehufhueiwhfdgfdgdgdgdfgdfgdfgfdgdfgfdgdfg</div>
+	<div style="float: right; width: 35%; word-wrap: break-word;">
+		<ul style = "list-style-type: none;">
+		<%
+			List<String> adList = (List<String>) request.getAttribute("adList");
+			if(adList != null) {
+				for(String ad: adList) {
+		%>
+			<li><a href = "<%=ad%>"><%=ad%></a></li>
+			<li />
+		<% 
+				}
+			}
+		%>
+		</ul>
+	</div>
 
 
 

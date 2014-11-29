@@ -93,11 +93,9 @@ public class QueryBidDAO {
 			} else {
 				// query does not exist
 				// create new entry in query table
-				String updateQueryTable = "INSERT INTO query(query, query_hits, ad_hits) VALUES (?, ?, ?)";
+				String updateQueryTable = "INSERT INTO query(query, query_hits, ad_hits) VALUES (?, 1, 0)";
 				pstmt = con.prepareStatement(updateQueryTable);
 				pstmt.setString(1, query);
-				pstmt.setInt(2, 1);
-				pstmt.setInt(3, 0);
 				pstmt.executeUpdate();
 			}
 			

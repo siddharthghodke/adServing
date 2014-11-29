@@ -16,7 +16,7 @@ public class SearchServer {
 	
 	SolrServer solr;
 	public SearchServer(){
-		this.solr = new HttpSolrServer(StringConstant.SOLR_CORE_URL);
+		solr = new HttpSolrServer(StringConstant.SOLR_CORE_URL);
 	}
 	
 	public List<QueryResult> getResult(String userQuery) {
