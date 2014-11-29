@@ -1,3 +1,4 @@
+<%@page import="java.util.Map"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ page import="java.util.List"%>
@@ -9,6 +10,7 @@
 <%
 	List<QueryResult> resultSet;
 	resultSet = (List<QueryResult>) request.getAttribute("result");
+	Map<String, Map<String, List<String>>> snippetMap = (Map<String, Map<String, List<String>>>) request.getAttribute("snippetMap");
 	
 %>
 
@@ -32,14 +34,36 @@
 	<div
 		style="float: left; width: 60%; word-wrap: break-word; overflow: hidden;">
 		<ul style="list-style-type: none;">
-			<%
-				if (resultSet != null) {
-					for (int i = 0; i < resultSet.size(); i++) {
-			%>
+		<%
+			if (resultSet != null) {
+				for (int i = 0; i < resultSet.size(); i++) {
+		%>
 			<li><a href="<%=resultSet.get(i).getUrl() %>"><%=resultSet.get(i).getTitle()%></a></li>
 			<li><%=resultSet.get(i).getUrl() %></li>
-			<li><%=resultSet.get(i).getLead_paragraph() %></li>
-			<li />
+			<%
+					String snippet = "";
+					if(snippetMap != null) {
+						Map<String, List<String>> fieldSnippet = snippetMap.get(resultSet.get(i).getUrl());
+						if(fieldSnippet != null) {
+							List<String> snippetList = fieldSnippet.get("full_text");
+							if(snippetList != null && snippetList.size() > 0) {
+								for(String sn: snippetList) {
+									snippet += sn;
+								}
+								System.out.println(snippet);
+								snippet = snippet.replaceAll("<em>", "<b>");
+								snippet = snippet.replaceAll("</em>", "</b>");
+								System.out.println("NEW:" + snippet + "\n\n");
+							}
+						}
+					}
+					if(snippet.isEmpty() || "".equals(snippet)) {
+						snippet = resultSet.get(i).getLead_paragraph();
+					}
+			%>
+			<br />
+			<li><%=snippet%></li>
+			<br />
 			<li />
 			<%
 				}
