@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.buffalo.ktmb.server.AdServer;
 import edu.buffalo.ktmb.service.BidService;
 import edu.buffalo.ktmb.service.QueryService;
 
@@ -25,6 +26,7 @@ public class BiddingServlet extends HttpServlet {
 	private static int sessionId = 1;
 	private BidService bidService = new BidService();
 	private QueryService queryService = new QueryService();
+	private AdServer adServer = new AdServer();
 
 	/**
 	 * 
@@ -50,23 +52,26 @@ public class BiddingServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String postRequest = request.getParameter("postRequest");
-		
+
 		switch(postRequest) {
 		case "postBid":
 			String query = request.getParameter("queryInput");
 			String bidAmt = request.getParameter("bidAmt");
 			String advLink = request.getParameter("advLink");
-			//System.out.println(userQuery +bidAmt+ advLink);
 			
 			if(query != null && bidAmt != null && advLink != null) {
-				bidService.addBid(Integer.parseInt(bidAmt), advLink, query, sessionId);
+				if(adServer.validateRequest(query,advLink)){
+					bidService.addBid(Integer.parseInt(bidAmt), advLink, query, sessionId);
+					request.setAttribute("result", "success");
+				}
 			}
-			
-				
-			request.setAttribute("result", "success");
+			else
+			{
+				request.setAttribute("result", "failure");
+			}
 			request.getRequestDispatcher("/EnterBid.jsp").forward(request, response);
 			break;
-			
+
 		case "updateBids":
 			bidService.updateWinningBids(sessionId++);
 			queryService.updateMinBidPriceForQueries();

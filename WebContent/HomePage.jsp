@@ -39,19 +39,19 @@
 	<FORM NAME="MainForm" METHOD="POST" action="SearchServlet"
 		style="width: 100%; margin-left: 15%;">
 		<% if (userQuery == null) {%>
-		<input type="text" id="userQ" name="userQuery" 
-			style="width: 60%; border: 1px solid black;height: 20px;font-size: 18px;">
+		<input type="text" id="userQ" name="userQuery"
+			style="width: 60%; border: 1px solid black;">
 
 
 		<%}
 			 else {%>
 		<input type="text" id="userQ" name="userQuery"
-			style="width: 60%; border: 1px solid black;height: 20px;font-size: 18px" value="<%=userQuery%>">
+			style="width: 60%; border: 1px solid black;" value="<%=userQuery%>">
 
 		<%} %>
 		<input type="hidden" id="postReq" name="postRequest" value="search" />
 
-		<INPUT TYPE="button" Style="border: 1px solid black;height: 25px;font-size: 18px" VALUE="Search"
+		<INPUT TYPE="button" Style="border: 1px solid black;" VALUE="Search"
 			onclick="searchClick(this); return false;">
 	</FORM>
 
@@ -105,12 +105,13 @@
 	<ul style="list-style-type: none;">
 		<%
 					List<String> adList = (List<String>) request.getAttribute("adList");
+					List<String> adSnippetList = (List<String>) request.getAttribute("adSnippetList");
 					if (adList != null) {
-						for (String ad : adList) {
+						for (int i=0; i<adList.size(); i++) {
 				%>
-		<li><a href="<%=ad%>"
-			onclick="updateAdClicks(this); return false;"><%=ad%></a></li>
-		<li />
+					<li><a href="<%=adList.get(i)%>" onclick="updateAdClicks(this); return false;"><%=adList.get(i)%></a></li>
+					<li><%=adSnippetList.get(i) %></li>
+					<li />
 		<%
 					}
 					}

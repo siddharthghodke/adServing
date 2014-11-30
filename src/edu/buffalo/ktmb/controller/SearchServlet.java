@@ -1,6 +1,7 @@
 package edu.buffalo.ktmb.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.solr.client.solrj.response.QueryResponse;
 
 import edu.buffalo.ktmb.bean.QueryResult;
+import edu.buffalo.ktmb.server.AdServer;
 import edu.buffalo.ktmb.server.SearchServer;
 import edu.buffalo.ktmb.service.QueryService;
 
@@ -48,6 +50,7 @@ public class SearchServlet extends HttpServlet {
 		String userQuery = request.getParameter("userQuery");
 		String postRequest = request.getParameter("postRequest");
 		SearchServer s = new SearchServer();
+		AdServer adServer = new AdServer();
 		Map<String, Map<String, List<String>>> hl;
 		QueryResponse rsp = s.getResult(userQuery);
 		List<QueryResult> bean = rsp.getBeans(QueryResult.class);
@@ -55,12 +58,22 @@ public class SearchServlet extends HttpServlet {
 		
 		switch(postRequest){
 			case "search":
+				List<String> adSnippetList = new ArrayList<String>();
 				// retrieve ads list for user query and update query hits 
-				List<String> adList = queryService.getAdsForQuery(userQuery);;
+				List<String> adList = queryService.getAdsForQuery(userQuery);
+				for(String ad:adList){
+					String adSnippet = "";
+					if(!ad.equals("")){
+						adSnippet = adServer.getAdSnippet(ad);
+					}
+					adSnippetList.add(adSnippet);
+				}
+				
 				// highlighting parameters
 				hl = rsp.getHighlighting();
 				request.setAttribute("snippetMap", hl);
 				request.setAttribute("adList", adList);
+				request.setAttribute("adSnippetList", adSnippetList);
 				request.setAttribute("userQuery",userQuery);
 				request.getRequestDispatcher("/HomePage.jsp").forward(request, response);
 				break;
