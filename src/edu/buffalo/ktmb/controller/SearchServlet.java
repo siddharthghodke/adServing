@@ -2,12 +2,15 @@ package edu.buffalo.ktmb.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.solr.client.solrj.response.QueryResponse;
 
 import edu.buffalo.ktmb.bean.QueryResult;
 import edu.buffalo.ktmb.server.SearchServer;
@@ -45,22 +48,29 @@ public class SearchServlet extends HttpServlet {
 		String userQuery = request.getParameter("userQuery");
 		String postRequest = request.getParameter("postRequest");
 		SearchServer s = new SearchServer();
-		List<QueryResult> bean = s.getResult(userQuery);
+		Map<String, Map<String, List<String>>> hl;
+		QueryResponse rsp = s.getResult(userQuery);
+		List<QueryResult> bean = rsp.getBeans(QueryResult.class);
 		request.setAttribute("result", bean);
 		
 		switch(postRequest){
 			case "search":
 				// retrieve ads list for user query and update query hits 
 				List<String> adList = queryService.getAdsForQuery(userQuery);;
+				// highlighting parameters
+				hl = rsp.getHighlighting();
+				request.setAttribute("snippetMap", hl);
 				request.setAttribute("adList", adList);
 				request.setAttribute("userQuery",userQuery);
 				request.getRequestDispatcher("/HomePage.jsp").forward(request, response);
 				break;
 			case "adUpdate":
 				queryService.incrementAdHitsForQuery(userQuery);
+				// highlighting parameters
+				hl = rsp.getHighlighting();
+				request.setAttribute("snippetMap", hl);
 				request.setAttribute("userQuery",userQuery);
-				request.getRequestDispatcher("/HomePage.jsp").forward(request, response);
-				
+				response.sendRedirect("http://www.google.com");
 		}
 		
 		
