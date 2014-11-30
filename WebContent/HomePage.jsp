@@ -75,10 +75,8 @@
 								for(String sn: snippetList) {
 									snippet += sn;
 								}
-								System.out.println(snippet);
 								snippet = snippet.replaceAll("<em>", "<b>");
 								snippet = snippet.replaceAll("</em>", "</b>");
-								System.out.println("NEW:" + snippet + "\n\n");
 							}
 						}
 					}

@@ -14,7 +14,7 @@ public class BidService {
 			queryId = qbDAO.insertQuery(query);
 		}
 		
-		Bid bid = new Bid(bidAmount, adUrl, queryId, sessionId);
+		Bid bid = new Bid(bidAmount * 100, adUrl, queryId, sessionId);
 		qbDAO.addBid(bid);
 	}
 	

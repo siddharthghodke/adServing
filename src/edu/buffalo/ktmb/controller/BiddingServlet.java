@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import edu.buffalo.ktmb.service.BidService;
+import edu.buffalo.ktmb.service.QueryService;
 
 
 @WebServlet("/BiddingServlet")
@@ -23,6 +24,7 @@ public class BiddingServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static int sessionId = 1;
 	private BidService bidService = new BidService();
+	private QueryService queryService = new QueryService();
 
 	/**
 	 * 
@@ -67,6 +69,7 @@ public class BiddingServlet extends HttpServlet {
 			
 		case "updateBids":
 			bidService.updateWinningBids(sessionId++);
+			queryService.updateMinBidPriceForQueries();
 			request.setAttribute("result", "success");
 			request.getRequestDispatcher("/UpdateBids.jsp").forward(request, response);
 			break;

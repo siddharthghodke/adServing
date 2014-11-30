@@ -93,7 +93,7 @@ public class QueryBidDAO {
 			} else {
 				// query does not exist
 				// create new entry in query table
-				String updateQueryTable = "INSERT INTO query(query, query_hits, ad_hits) VALUES (?, 1, 0)";
+				String updateQueryTable = "INSERT INTO query(query, query_hits, ad_hits, min_bid_price) VALUES (?, 1, 0, 500)";
 				pstmt = con.prepareStatement(updateQueryTable);
 				pstmt.setString(1, query);
 				pstmt.executeUpdate();
@@ -222,26 +222,32 @@ public class QueryBidDAO {
 	 */
 	public List<Bid> getPreviousBidsForQuery(String query) {
 		try {
-			con = DBManager.getInstance().getConnection();
+			Connection con = DBManager.getInstance().getConnection();
 			int queryId = getQueryId(query);
-			String sql = "SELECT * FROM bid WHERE query_id = ?";
+			String sql = "SELECT * FROM query_bid WHERE query_id = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, queryId);
-			
+			rs = pstmt.executeQuery();
 			List<Bid> bidsForQuery = new ArrayList<Bid>();
+			sql = "SELECT * FROM bid WHERE bid_id = ?";
+			pstmt = con.prepareStatement(sql);
 			while(rs.next()) {
-				Bid bid = new Bid();
-				bid.setBidId(rs.getInt("bid_id"));
-				bid.setAdUrl(rs.getString("ad"));
-				bid.setBidAmount(rs.getInt("bid_amount"));
-				bid.setQueryId(rs.getInt("query_id"));
-				bid.setSessionId(rs.getInt("session_id"));
-				bidsForQuery.add(bid);
+				pstmt.setInt(1, rs.getInt("bid_id"));
+				ResultSet bidRS = pstmt.executeQuery();
+				if(bidRS.next()) {
+					Bid bid = new Bid();
+					bid.setBidId(bidRS.getInt("bid_id"));
+					bid.setAdUrl(bidRS.getString("ad"));
+					bid.setBidAmount(bidRS.getInt("bid_amount"));
+					bid.setQueryId(bidRS.getInt("query_id"));
+					bid.setSessionId(bidRS.getInt("session_id"));
+					bidsForQuery.add(bid);
+				}
 			}
 			return bidsForQuery;
 			
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		} finally {
 			close();
 		}
@@ -365,6 +371,7 @@ public class QueryBidDAO {
 				q.setQuery(query);
 				q.setQueryHits(rs.getInt("query_hits"));
 				q.setAdHits(rs.getInt("ad_hits"));
+				q.setMinBidPrice(rs.getInt("min_bid_price"));
 				return q;
 			} else {
 				return null;
@@ -414,7 +421,7 @@ public class QueryBidDAO {
 	public int insertQuery(String query) {
 		try {
 			con = DBManager.getInstance().getConnection();
-			String sql = "INSERT INTO query(query, query_hits, ad_hits) VALUES (?,0,0)";
+			String sql = "INSERT INTO query(query, query_hits, ad_hits, min_bid_price) VALUES (?,0,0,500)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, query);
 			pstmt.executeUpdate();
@@ -427,6 +434,83 @@ public class QueryBidDAO {
 			close();
 		}
 		return -1;
+	}
+	
+	/**
+	 * Get the hits for the top query
+	 * @return
+	 */
+	public int getMaxQueryHits() {
+		try {
+			con = DBManager.getInstance().getConnection();
+			String sql = "SELECT MAX(query_hits) as max_hits FROM query";
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(sql);
+			if(rs.next()) {
+				return(rs.getInt("max_hits"));
+			}
+		} catch (Exception e) {
+			
+		} finally {
+			close();
+		}
+		return -1;
+	}
+	
+	/**
+	 * Get query list for current queries with ads
+	 * @return
+	 */
+	public List<Query> getQueriesToUpdateMinBidPrice() {
+		try {
+			List<Query> queryList = new ArrayList<Query>();
+			con = DBManager.getInstance().getConnection();
+			String sql = "SELECT query_id FROM query_top_bids";
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(sql);
+			while(rs.next()) {
+				Query query = new Query();
+				sql = "SELECT * FROM query WHERE query_id = ?";
+				pstmt = con.prepareStatement(sql);
+				pstmt.setInt(1, rs.getInt("query_id"));
+				ResultSet queryRS = pstmt.executeQuery();
+				if(queryRS.next()) {
+					query.setQueryId(queryRS.getInt("query_id"));
+					query.setQuery(queryRS.getString("query"));
+					query.setQueryHits(queryRS.getInt("query_hits"));
+					query.setAdHits(queryRS.getInt("ad_hits"));
+					query.setMinBidPrice(queryRS.getInt("min_bid_price"));
+					queryList.add(query);
+				}
+			}
+			return queryList;
+			
+		} catch (Exception e) {
+			
+		} finally {
+			close();
+		}
+		return null;
+	}
+	
+	/**
+	 * Update minimum bid price for given query
+	 * @param queryId
+	 * @param minBidPrice
+	 */
+	public void updateQueryMinBid(int queryId, int minBidPrice) {
+		try {
+			con = DBManager.getInstance().getConnection();
+			String sql = "UPDATE query SET min_bid_price = ? WHERE query_id = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, minBidPrice);
+			pstmt.setInt(2, queryId);
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			
+		} finally {
+			close();
+		}
 	}
 	
 	/**

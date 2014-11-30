@@ -64,6 +64,7 @@ public class SearchServlet extends HttpServlet {
 				request.setAttribute("userQuery",userQuery);
 				request.getRequestDispatcher("/HomePage.jsp").forward(request, response);
 				break;
+				
 			case "adUpdate":
 				queryService.incrementAdHitsForQuery(userQuery);
 				// highlighting parameters
@@ -71,6 +72,13 @@ public class SearchServlet extends HttpServlet {
 				request.setAttribute("snippetMap", hl);
 				request.setAttribute("userQuery",userQuery);
 				response.sendRedirect("http://www.google.com");
+				break;
+				
+			case "getMinPrice":
+				String query = request.getParameter("queryInput");
+				response.setContentType("text/html");
+				response.getWriter().print(queryService.getMinBidPrice(query));
+				break;
 		}
 		
 		

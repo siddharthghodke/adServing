@@ -6,7 +6,7 @@ public class Query {
 	private String query;
 	private int queryHits;
 	private int adHits;
-	private int bidId;
+	private int minBidPrice;
 	
 	public int getQueryId() {
 		return queryId;
@@ -32,10 +32,10 @@ public class Query {
 	public void setAdHits(int adHits) {
 		this.adHits = adHits;
 	}
-	public int getBidId() {
-		return bidId;
+	public int getMinBidPrice() {
+		return minBidPrice;
 	}
-	public void setBidId(int bidId) {
-		this.bidId = bidId;
+	public void setMinBidPrice(int minBidPrice) {
+		this.minBidPrice = minBidPrice;
 	}
 }

@@ -23,6 +23,7 @@ public class SearchServer {
 		solrQuery.setHighlight(true);
 		solrQuery.setIncludeScore(true);
 		solrQuery.setParam("hl.fl", "full_text");
+		solrQuery.setParam("hl.fragsize", "400");
 		QueryResponse rsp = null;
 		try {
 			rsp = solr.query(solrQuery);
