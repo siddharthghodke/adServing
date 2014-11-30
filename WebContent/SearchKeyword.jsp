@@ -8,19 +8,17 @@
 <title>Search Engine</title>
 </head>
 <body background="/WEB-INF/img/background.jpg">
-	<div id="formDiv">
+<img src="logo.jpg" style="width: 30%; height: 3%; margin-left: 35%;">
+		<br> <br>
+	<div id="formDiv" align="center">
 		<form action="KeywordResultServlet" method="post" name="keywordForm"
 			id="keywordForm">
-			<table>
-				<tr>
-					<td>Keyword:</td>
-					<td><input type="text" name="keyword" /></td>
-				</tr>
-			</table>
-			<input type="submit" value="Get Information" />
+			Keyword:  <input type="text" name="keyword" style="width: 30%; border: 1px solid black;"/>
+				
+			<input type="submit" value="Get Information" Style="border: 1px solid black;"/>
 		</form>
 	</div>
-	<div id="resultsDiv">
+	<div id="resultsDiv" align="justify">
 		<%
 			String success = (String) request.getAttribute("result");
 			Query query = (Query) request.getAttribute("query");

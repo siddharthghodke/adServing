@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Search Engine</title>
+<title>NOVA Search</title>
 
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	
@@ -23,7 +23,7 @@
 				data: value,
 				success :function(data) {
 					//alert(data);
-					$("#minBidPrice").html(data);
+					$("#minBidPrice").html("   (Minimum Bid Price: $"+data+")");
 				}
 			});
 			
@@ -47,29 +47,34 @@
 </head>
 
 <body background="/WEB-INF/img/background.jpg">
-	<div id="formDiv">
+<img src="logo.jpg" style="width: 30%; height: 3%; margin-left: 35%;">
+		<br> <br>
+	<div id="formDiv" align="center" >
 		<form action="BiddingServlet" method="post" name="queryForm"
 			id="queryForm">
 			<input type="hidden" name="postRequest" value="postBid" />
-			<table>
+			<table style="font-family: sans-serif;">
 				<tr>
-					<td>Keyword:</td>
+					<td >Keyword:  </td>
 					<td><input type="text" name="queryInput" id ="queryInput" onchange="getMinPrice();"/></td>
+					 
+					<td><div id="minBidPrice" style="font-size: 16px"></div></td>
 				</tr>
 				<tr>
-					<td>Bid Amount:</td>
+					<td>Bid Amount:  </td>
 					<td><input type="text" name="bidAmt" /></td>
 				</tr>
 				<tr>
-					<td>Advertisement Link:</td>
+					<td>Advertisement Link:  </td>
 					<td><input type="text" name="advLink" /></td>
 				</tr>
 			</table>
-			<input type="submit" value="Submit"></input>
+			<br />
+			<input type="submit" value="Submit" style="border: 1px solid black; font-family: sans-serif;"></input>
 		</form>
 	</div>
 	<br />
-	Min Bid: <div id="minBidPrice"></div>
+	
 	<div id="resultsDiv"></div>
 	<!-- <form action="SearchServlet" method="post" name="queryBidPrice" id="queryBidPrice">
 		<input type="hidden" name="postRequest" value="getMinPrice" />
