@@ -12,6 +12,7 @@ public class QueryService {
 	private static final Float MIN_BID = 5.00F;
 	private static final Float QUERY_HIT_QUOTIENT = 0.5F;
 	private static final Float AD_HIT_QUOTIENT = 0.5F;
+	private static final Float MAX_INCREMENT_QUOTIENT = 0.1F;
 	
 	public List<String> getAdsForQuery(String query) {
 		return qbDao.getAdsForQuery(query);
@@ -47,20 +48,26 @@ public class QueryService {
 	public void updateMinBidPriceForQueries() {
 		List<Query> queryList = qbDao.getQueriesToUpdateMinBidPrice();
 		int maxHits = qbDao.getMaxQueryHits();
-		//int[][] updateInfo = new int[queryList.size()][];
-		//int i=0;
 		
 		for(Query query: queryList) {
 			int currentMin = query.getMinBidPrice();
+			int suggestedBidPrice = query.getSuggestedBidPrice();
 			int newMin = currentMin;
+			int newSuggestedPrice = suggestedBidPrice;
 			int queryHits = query.getQueryHits();
 			int adHits = query.getAdHits();
 			
 			float queryPopularity = (float) queryHits / maxHits;
 			float adCTR = (float) adHits / queryHits;
 			
-			float incrementFactor = queryPopularity * QUERY_HIT_QUOTIENT + adCTR * AD_HIT_QUOTIENT;
+			float popularityIndex = queryPopularity * QUERY_HIT_QUOTIENT + adCTR * AD_HIT_QUOTIENT;
 			
+			// calculate new min for query
+			int maxIncrease = (int)(MAX_INCREMENT_QUOTIENT * currentMin);
+			int actualIncrease = (int) (maxIncrease * popularityIndex);
+			newMin = currentMin + actualIncrease;
+			
+			// calculate new suggested bid price
 			List<Bid> previousWinningBids = getPreviousBidsForQuery(query.getQuery());
 			int sum = 0;
 			int count = 0;
@@ -68,17 +75,20 @@ public class QueryService {
 				sum += bid.getBidAmount();
 				count++;
 			}
-			int avg = sum/count;
-			
-			if(avg > currentMin) {
-				int diff = avg - currentMin;
-				int inc = (int) (diff * incrementFactor);
-				newMin = currentMin + inc;
-				qbDao.updateQueryMinBid(query.getQueryId(), newMin);
+			int avgWinningBids = sum/count;
+			if(avgWinningBids > suggestedBidPrice) {
+				int diff = avgWinningBids - suggestedBidPrice;
+				int inc = (int) (diff * popularityIndex);
+				newSuggestedPrice = suggestedBidPrice + inc;
 			}
-		/*	updateInfo[i][0] = query.getQueryId();
-			updateInfo[i][1] = newMin;
-			i++;*/
+			
+			if(newSuggestedPrice < newMin) {
+				newSuggestedPrice = newMin;
+			}
+			
+			if(newSuggestedPrice != suggestedBidPrice || newMin != currentMin) {
+				qbDao.updateQueryMinBid(query.getQueryId(), newMin, newSuggestedPrice);
+			}
 		}
 		
 	}

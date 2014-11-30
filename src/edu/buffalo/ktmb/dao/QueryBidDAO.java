@@ -93,7 +93,7 @@ public class QueryBidDAO {
 			} else {
 				// query does not exist
 				// create new entry in query table
-				String updateQueryTable = "INSERT INTO query(query, query_hits, ad_hits, min_bid_price) VALUES (?, 1, 0, 500)";
+				String updateQueryTable = "INSERT INTO query(query, query_hits, ad_hits, min_bid_price, suggested_bid_price) VALUES (?, 1, 0, 500, 500)";
 				pstmt = con.prepareStatement(updateQueryTable);
 				pstmt.setString(1, query);
 				pstmt.executeUpdate();
@@ -372,6 +372,7 @@ public class QueryBidDAO {
 				q.setQueryHits(rs.getInt("query_hits"));
 				q.setAdHits(rs.getInt("ad_hits"));
 				q.setMinBidPrice(rs.getInt("min_bid_price"));
+				q.setSuggestedBidPrice(rs.getInt("suggested_bid_price"));
 				return q;
 			} else {
 				return null;
@@ -421,7 +422,7 @@ public class QueryBidDAO {
 	public int insertQuery(String query) {
 		try {
 			con = DBManager.getInstance().getConnection();
-			String sql = "INSERT INTO query(query, query_hits, ad_hits, min_bid_price) VALUES (?,0,0,500)";
+			String sql = "INSERT INTO query(query, query_hits, ad_hits, min_bid_price, suggested_bid_price) VALUES (?,0,0,500,500)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, query);
 			pstmt.executeUpdate();
@@ -480,6 +481,7 @@ public class QueryBidDAO {
 					query.setQueryHits(queryRS.getInt("query_hits"));
 					query.setAdHits(queryRS.getInt("ad_hits"));
 					query.setMinBidPrice(queryRS.getInt("min_bid_price"));
+					query.setSuggestedBidPrice(queryRS.getInt("suggested_bid_price"));
 					queryList.add(query);
 				}
 			}
@@ -498,13 +500,14 @@ public class QueryBidDAO {
 	 * @param queryId
 	 * @param minBidPrice
 	 */
-	public void updateQueryMinBid(int queryId, int minBidPrice) {
+	public void updateQueryMinBid(int queryId, int minBidPrice, int suggestedBidPrice) {
 		try {
 			con = DBManager.getInstance().getConnection();
-			String sql = "UPDATE query SET min_bid_price = ? WHERE query_id = ?";
+			String sql = "UPDATE query SET min_bid_price = ?, suggested_bid_price = ? WHERE query_id = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, minBidPrice);
-			pstmt.setInt(2, queryId);
+			pstmt.setInt(2, suggestedBidPrice);
+			pstmt.setInt(3, queryId);
 			pstmt.executeUpdate();
 		} catch (Exception e) {
 			

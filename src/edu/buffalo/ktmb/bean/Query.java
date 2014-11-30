@@ -7,6 +7,7 @@ public class Query {
 	private int queryHits;
 	private int adHits;
 	private int minBidPrice;
+	private int suggestedBidPrice;
 	
 	public int getQueryId() {
 		return queryId;
@@ -37,5 +38,11 @@ public class Query {
 	}
 	public void setMinBidPrice(int minBidPrice) {
 		this.minBidPrice = minBidPrice;
+	}
+	public int getSuggestedBidPrice() {
+		return suggestedBidPrice;
+	}
+	public void setSuggestedBidPrice(int suggestedBidPrice) {
+		this.suggestedBidPrice = suggestedBidPrice;
 	}
 }
