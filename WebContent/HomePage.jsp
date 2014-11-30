@@ -10,14 +10,13 @@
 <head>
 <script>
 	function updateAdClicks(obj) {
+		document.getElementById('userQueries').value = document.getElementById('userQ').value;
 		document.getElementById('clickedAdID').value = obj.getAttribute("href");
-		document.getElementById('postReq').value = "adUpdate";
-		document.MainForm.submit();
+		document.AdForm.submit();
 		return false;
 	}
 	
 	function searchClick(obj) {
-		document.getElementById('postReq').value = "search";
 		document.MainForm.submit();
 		return false;
 	}
@@ -33,39 +32,46 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>NOVA Search</title>
 </head>
-	<div>
-		<img src="logo.jpg" style="width: 30%; height: 3%; margin-left: 35%;">
-		<br> <br>
+<div>
+	<img src="logo.jpg" style="width: 30%; height: 3%; margin-left: 35%;">
+	<br> <br>
 
-		<FORM NAME="MainForm" METHOD="POST" action="SearchServlet"
-			style="width: 100%; margin-left: 15%;">
-			<% if (userQuery == null) {%>
-			<input type="text" id="userQ" name="userQuery"	style="width: 60%; border: 1px solid black;"> 
-			<input type = "hidden" id= "postReq" name = "postRequest" value = "search" />
-			
-			<%}
+	<FORM NAME="MainForm" METHOD="POST" action="SearchServlet"
+		style="width: 100%; margin-left: 15%;">
+		<% if (userQuery == null) {%>
+		<input type="text" id="userQ" name="userQuery"
+			style="width: 60%; border: 1px solid black;">
+
+
+		<%}
 			 else {%>
-			 <input type="text" id="userQ" name="userQuery"	style="width: 60%; border: 1px solid black;" value="<%=userQuery%>">
-			 <input type = "hidden" id= "postReq" name = "postRequest" value = "adUpdate" />
-			 
-		 <%} %> 
-			 
-			<INPUT TYPE="button" Style="border: 1px solid black;" VALUE="Search" onclick="searchClick(this); return false;">
-			<input type="hidden" id="clickedAdID" name="clickedAd" />
-		</FORM>
+		<input type="text" id="userQ" name="userQuery"
+			style="width: 60%; border: 1px solid black;" value="<%=userQuery%>">
 
-	</div>
+		<%} %>
+		<input type="hidden" id="postReq" name="postRequest" value="search" />
 
-	<div
-		style="float: left; width: 60%; word-wrap: break-word; overflow: hidden;">
-		<ul style="list-style-type: none;">
-			<%
+		<INPUT TYPE="button" Style="border: 1px solid black;" VALUE="Search"
+			onclick="searchClick(this); return false;">
+	</FORM>
+
+	<form name="AdForm" method="post" action="SearchServlet">
+		<input type="hidden" id="postReq" name="postRequest" value="adUpdate" />
+		<input type="hidden" id="clickedAdID" name="clickedAd" />
+        <input type="hidden" id="userQueries" name="userQuery" />
+	</form>
+</div>
+
+<div
+	style="float: left; width: 60%; word-wrap: break-word; overflow: hidden;">
+	<ul style="list-style-type: none;">
+		<%
 				if (resultSet != null) {
 					for (int i = 0; i < resultSet.size(); i++) {
 			%>
-			<li><a href="<%=resultSet.get(i).getUrl()%>"><%=resultSet.get(i).getTitle()%></a></li>
-			<li><FONT SIZE=2 COLOR="009933" ><%=resultSet.get(i).getUrl() %></FONT></li>
-<%		
+		<li><a href="<%=resultSet.get(i).getUrl()%>"><%=resultSet.get(i).getTitle()%></a></li>
+		<li><FONT SIZE=2 COLOR="009933"><%=resultSet.get(i).getUrl() %></FONT></li>
+		<%		
 					String snippet = "";
 					if(snippetMap != null) {
 						Map<String, List<String>> fieldSnippet = snippetMap.get(resultSet.get(i).getUrl());
@@ -84,34 +90,34 @@
 						snippet = resultSet.get(i).getLead_paragraph();
 					}
 			%>
-			
-			<li><%=snippet%></li>
-			<li />
-			<li />
-			<%
+
+		<li><%=snippet%></li>
+		<li />
+		<li />
+		<%
 				}
 			}
 			%>
-		</ul>
-	</div>
+	</ul>
+</div>
 
-	<div style="float: right; width: 35%; word-wrap: break-word;">
-		<ul style="list-style-type: none;">
-				<%
+<div style="float: right; width: 35%; word-wrap: break-word;">
+	<ul style="list-style-type: none;">
+		<%
 					List<String> adList = (List<String>) request.getAttribute("adList");
 					if (adList != null) {
 						for (String ad : adList) {
 				%>
-				<li><a href="<%=ad%>"
-					onclick="updateAdClicks(this); return false;"><%=ad%></a></li>
-				<li />
-				<%
+		<li><a href="<%=ad%>"
+			onclick="updateAdClicks(this); return false;"><%=ad%></a></li>
+		<li />
+		<%
 					}
 					}
 				%>
-				
-		</ul>
-	</div>
+
+	</ul>
+</div>
 
 
 
