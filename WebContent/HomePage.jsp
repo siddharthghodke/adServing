@@ -39,19 +39,19 @@
 	<FORM NAME="MainForm" METHOD="POST" action="SearchServlet"
 		style="width: 100%; margin-left: 15%;">
 		<% if (userQuery == null) {%>
-		<input type="text" id="userQ" name="userQuery"
-			style="width: 60%; border: 1px solid black;">
+		<input type="text" id="userQ" name="userQuery" 
+			style="width: 60%; border: 1px solid black;height: 20px;font-size: 18px;">
 
 
 		<%}
 			 else {%>
 		<input type="text" id="userQ" name="userQuery"
-			style="width: 60%; border: 1px solid black;" value="<%=userQuery%>">
+			style="width: 60%; border: 1px solid black;height: 20px;font-size: 18px" value="<%=userQuery%>">
 
 		<%} %>
 		<input type="hidden" id="postReq" name="postRequest" value="search" />
 
-		<INPUT TYPE="button" Style="border: 1px solid black;" VALUE="Search"
+		<INPUT TYPE="button" Style="border: 1px solid black;height: 25px;font-size: 18px" VALUE="Search"
 			onclick="searchClick(this); return false;">
 	</FORM>
 

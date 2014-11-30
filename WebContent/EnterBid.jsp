@@ -53,24 +53,24 @@
 		<form action="BiddingServlet" method="post" name="queryForm"
 			id="queryForm">
 			<input type="hidden" name="postRequest" value="postBid" />
-			<table style="font-family: sans-serif;">
+			<table style="font-family: sans-serif;font-size: 20px">
 				<tr>
 					<td >Keyword:  </td>
-					<td><input type="text" name="queryInput" id ="queryInput" onchange="getMinPrice();"/></td>
+					<td><input type="text" name="queryInput" id ="queryInput" style="border: 1px solid black;height: 20px;font-size: 18px" onchange="getMinPrice();"/></td>
 					 
 					<td><div id="minBidPrice" style="font-size: 16px"></div></td>
 				</tr>
 				<tr>
 					<td>Bid Amount:  </td>
-					<td><input type="text" name="bidAmt" /></td>
+					<td><input type="text" name="bidAmt" style="border: 1px solid black;height: 20px;font-size: 18px" /></td>
 				</tr>
 				<tr>
 					<td>Advertisement Link:  </td>
-					<td><input type="text" name="advLink" /></td>
+					<td><input type="text" name="advLink" style="border: 1px solid black;height: 20px;font-size: 18px"/></td>
 				</tr>
 			</table>
 			<br />
-			<input type="submit" value="Submit" style="border: 1px solid black; font-family: sans-serif;"></input>
+			<input type="submit" value="Submit" style="border: 1px solid black; font-family: sans-serif;font-size: 18px"></input>
 		</form>
 	</div>
 	<br />

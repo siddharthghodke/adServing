@@ -5,17 +5,17 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Search Engine</title>
+<title>NOVA Search</title>
 </head>
 <body background="/WEB-INF/img/background.jpg">
 <img src="logo.jpg" style="width: 30%; height: 3%; margin-left: 35%;">
 		<br> <br>
-	<div id="formDiv" align="center">
+	<div id="formDiv" align="center" style="font-family: sans-serif;font-size: 20px">
 		<form action="KeywordResultServlet" method="post" name="keywordForm"
 			id="keywordForm">
-			Keyword:  <input type="text" name="keyword" style="width: 30%; border: 1px solid black;"/>
+			Keyword:  <input type="text" name="keyword" style="width: 30%; border: 1px solid black;height: 20px"/>
 				
-			<input type="submit" value="Get Information" Style="border: 1px solid black;"/>
+			<input type="submit" value="Get Information" Style="border: 1px solid black;font-family: sans-serif;font-size: 18px"/>
 		</form>
 	</div>
 	<div id="resultsDiv" align="justify">
