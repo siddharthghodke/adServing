@@ -2,15 +2,12 @@ package edu.buffalo.ktmb.controller;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.solr.client.solrj.response.QueryResponse;
 
 import edu.buffalo.ktmb.bean.QueryResult;
 import edu.buffalo.ktmb.server.SearchServer;
@@ -46,21 +43,27 @@ public class SearchServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String userQuery = request.getParameter("userQuery");
-		System.out.println("Query: "+userQuery);
+		String postRequest = request.getParameter("postRequest");
 		SearchServer s = new SearchServer();
-		QueryResponse rsp = s.getResult(userQuery);
-		List<QueryResult> bean = rsp.getBeans(QueryResult.class);
+		List<QueryResult> bean = s.getResult(userQuery);
 		request.setAttribute("result", bean);
 		
-		// highlighting parameters
-		Map<String, Map<String, List<String>>> hl = rsp.getHighlighting();
-		request.setAttribute("snippetMap", hl);
+		switch(postRequest){
+			case "search":
+				// retrieve ads list for user query and update query hits 
+				List<String> adList = queryService.getAdsForQuery(userQuery);;
+				request.setAttribute("adList", adList);
+				request.setAttribute("userQuery",userQuery);
+				request.getRequestDispatcher("/HomePage.jsp").forward(request, response);
+				break;
+			case "adUpdate":
+				queryService.incrementAdHitsForQuery(userQuery);
+				request.setAttribute("userQuery",userQuery);
+				request.getRequestDispatcher("/HomePage.jsp").forward(request, response);
+				
+		}
 		
-		// retrieve ads list for user query and update query hits 
-		List<String> adList = queryService.getAdsForQuery(userQuery);
-		request.setAttribute("adList", adList);
 		
-		request.getRequestDispatcher("/HomePage.jsp").forward(request, response);
 	}
 
 }
