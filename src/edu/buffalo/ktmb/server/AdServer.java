@@ -27,6 +27,9 @@ public class AdServer {
 	
 	public AdResult getAdSnippet(String ad){
 		String fileID = fileToUrl.get(ad);
+		if(fileID == null) {
+			return null;
+		}
 		fileID = fileID.replaceAll("-", "");
 		SolrQuery solrQuery = new SolrQuery();
 		QueryResponse rsp = null;

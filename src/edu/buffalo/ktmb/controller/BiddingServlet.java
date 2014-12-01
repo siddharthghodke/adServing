@@ -63,6 +63,8 @@ public class BiddingServlet extends HttpServlet {
 				if(adServer.validateRequest(query,advLink)){
 					bidService.addBid(Integer.parseInt(bidAmt), advLink, query, sessionId);
 					request.setAttribute("result", "success");
+				} else {
+					request.setAttribute("result", "failure");
 				}
 			}
 			else

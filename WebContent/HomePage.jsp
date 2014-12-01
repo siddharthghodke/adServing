@@ -120,16 +120,19 @@
 					List<String> adSnippetList = (ArrayList<String>) request.getAttribute("adSnippetList");
 					List<String> adTitleList = (ArrayList<String>) request.getAttribute("adTitleList");
 					if (adList != null) {
+				%>
+					<br /><div style="font-size: 11pt;">Sponsored Ads<br /><br />
+				<%
 						for (int i=0; i<adList.size(); i++) {
 				%>
 					<li><a href="<%=adList.get(i)%>" onclick="updateAdClicks(this); return false;"><%=adTitleList.get(i)%></a></li>
 					<li><%=adSnippetList.get(i) %></li>
-					<li />
+					<br /><br />
 		<%
 					}
 					}
 				%>
-
+			</div>
 	</ul>
 </div>
 
