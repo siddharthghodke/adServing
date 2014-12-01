@@ -48,6 +48,7 @@ public class SearchServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		long startTime = System.currentTimeMillis();
 		String userQuery = request.getParameter("userQuery");
 		String postRequest = request.getParameter("postRequest");
 		SearchServer s = new SearchServer();
@@ -78,13 +79,17 @@ public class SearchServlet extends HttpServlet {
 					adTitleList.add(adTitle);
 				}
 				
+				long endTime = System.currentTimeMillis();
+				float queryTime = (float)(endTime - startTime)/1000;
+				request.setAttribute("queryTime",queryTime);
+				
 				// highlighting parameters
 				hl = rsp.getHighlighting();
 				request.setAttribute("snippetMap", hl);
 				request.setAttribute("adList", adList);
 				request.setAttribute("adTitleList", adTitleList);
 				request.setAttribute("adSnippetList", adSnippetList);
-				request.setAttribute("userQuery",userQuery);
+				request.setAttribute("userQuery",userQuery);				
 				request.getRequestDispatcher("/HomePage.jsp").forward(request, response);
 				break;
 				

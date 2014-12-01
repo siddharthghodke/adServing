@@ -42,8 +42,7 @@
 		<% if (userQuery == null) {%>
 		<input type="text" id="userQ" name="userQuery"
 			style="width: 60%; border: 1px solid black;">
-
-
+		
 		<%}
 			 else {%>
 		<input type="text" id="userQ" name="userQuery"
@@ -66,10 +65,21 @@
 <div
 	style="float: left; width: 60%; word-wrap: break-word; overflow: hidden;">
 	<ul style="list-style-type: none;">
+	
+		<% if (resultSet!=null && resultSet.isEmpty()) {%>
+			<b>Your search - <font color="red"> <%=userQuery%> </font> - did not match any documents.</b>
+			<p><b>Suggestions:</b><br>  -Make sure all words are spelled correctly.<br>  -Try different keywords.
+			<br>  -Try more general keywords.</p>
+		<% } %>
+		
 		<%
-				if (resultSet != null) {
-					for (int i = 0; i < resultSet.size(); i++) {
+				if (resultSet != null && !resultSet.isEmpty()) {
+					Float qTime = (Float)request.getAttribute("queryTime"); %>
+					<Font color="Grey" size="2">Response Time: <%=qTime%>s</Font><br><br>
+					<% for (int i = 0; i < resultSet.size(); i++) {
 			%>
+			
+			
 		<li><a href="<%=resultSet.get(i).getUrl()%>"><%=resultSet.get(i).getTitle()%></a></li>
 		<li><FONT SIZE=2 COLOR="009933"><%=resultSet.get(i).getUrl() %></FONT></li>
 		<%		
@@ -92,12 +102,13 @@
 					}
 			%>
 
-		<li><%=snippet%></li>
-		<li />
-		<li />
+		<li><font size=3><%=snippet%></font></li>
+		<br>
 		<%
 				}
-			}
+			}else{%>
+				
+			<%}
 			%>
 	</ul>
 </div>
