@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ page import="java.util.List"%>
+<%@ page import="java.util.ArrayList"%>
 <%@ page import="edu.buffalo.ktmb.bean.QueryResult"%>
 <%@page import="java.util.Map"%>
 
@@ -104,12 +105,13 @@
 <div style="float: right; width: 35%; word-wrap: break-word;">
 	<ul style="list-style-type: none;">
 		<%
-					List<String> adList = (List<String>) request.getAttribute("adList");
-					List<String> adSnippetList = (List<String>) request.getAttribute("adSnippetList");
+					List<String> adList = (ArrayList<String>) request.getAttribute("adList");
+					List<String> adSnippetList = (ArrayList<String>) request.getAttribute("adSnippetList");
+					List<String> adTitleList = (ArrayList<String>) request.getAttribute("adTitleList");
 					if (adList != null) {
 						for (int i=0; i<adList.size(); i++) {
 				%>
-					<li><a href="<%=adList.get(i)%>" onclick="updateAdClicks(this); return false;"><%=adList.get(i)%></a></li>
+					<li><a href="<%=adList.get(i)%>" onclick="updateAdClicks(this); return false;"><%=adTitleList.get(i)%></a></li>
 					<li><%=adSnippetList.get(i) %></li>
 					<li />
 		<%

@@ -53,20 +53,20 @@
 		<form action="BiddingServlet" method="post" name="queryForm"
 			id="queryForm">
 			<input type="hidden" name="postRequest" value="postBid" />
-			<table style="font-family: sans-serif;font-size: 20px; table-layout: fixed;">
-				<tr>
-					<td width="150px">Keyword:  </td>
-					<td width="150px"><input type="text" name="queryInput" id ="queryInput" style="border: 1px solid black;height: 20px;font-size: 18px" onchange="getMinPrice();"/></td>
+			<table width="50%" style="font-family: sans-serif;font-size: 20px; table-layout: fixed;">
+				<tr >
+					<td width="35%">Keyword:  </td>
+					<td width="35%"><input type="text" name="queryInput" id ="queryInput" style="border: 1px solid black;height: 20px;font-size: 18px" onchange="getMinPrice();"/></td>
 					 
-					<td width="200px"><div id="minBidPrice" style="font-size: 16px"></div></td>
+					<td width="30%"><div id="minBidPrice" style="font-size: 16px"></div></td>
 				</tr>
 				<tr>
-					<td width="150px">Bid Amount:  </td>
-					<td width="150px"><input type="text" name="bidAmt" style="border: 1px solid black;height: 20px;font-size: 18px" /></td>
+					<td width="35%">Bid Amount:  </td>
+					<td width="35%"><input type="text" name="bidAmt" style="border: 1px solid black;height: 20px;font-size: 18px" /></td>
 				</tr>
 				<tr>
-					<td width="200px">Advertisement Link:  </td>
-					<td width="200px"><input type="text" name="advLink" style="border: 1px solid black;height: 20px;font-size: 18px"/></td>
+					<td width="35%">Advertisement Link:  </td>
+					<td width="35%"><input type="text" name="advLink" style="border: 1px solid black;height: 20px;font-size: 18px"/></td>
 				</tr>
 			</table>
 			<br />

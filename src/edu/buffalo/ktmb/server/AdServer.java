@@ -2,7 +2,7 @@ package edu.buffalo.ktmb.server;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+//import java.util.Map;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
@@ -25,13 +25,14 @@ public class AdServer {
 		solr = new HttpSolrServer(StringConstant.AD_CORE_URL);
 	}
 	
-	public String getAdSnippet(String ad){
+	public AdResult getAdSnippet(String ad){
 		String fileID = fileToUrl.get(ad);
+		fileID = fileID.replaceAll("-", "");
 		SolrQuery solrQuery = new SolrQuery();
 		QueryResponse rsp = null;
-		Map<String, Map<String, List<String>>> hl;
+		//Map<String, Map<String, List<String>>> hl;
 
-		solrQuery.setParam("q", "id:"+fileID);
+		solrQuery.setParam("q", fileID);
 		solrQuery.setHighlight(true);
 		solrQuery.setParam("hl.fl", "content");
 		try{
@@ -41,7 +42,20 @@ public class AdServer {
 			e.printStackTrace();
 		}
 		List<AdResult> adResult = rsp.getBeans(AdResult.class);
-
+		int index = 0;
+		for(AdResult adRes: adResult) {
+			if(adRes.getId().contains(fileID)) {
+				fileID = adRes.getId();
+				break;
+			}
+			index++;
+		}
+		if(index == adResult.size()) {
+			return null;
+		}
+		
+		return adResult.get(index);
+		/*
 		hl = rsp.getHighlighting();
 		String snippet = "";
 		if(hl != null) {
@@ -58,15 +72,18 @@ public class AdServer {
 			}
 		}
 		if(snippet.isEmpty() || "".equals(snippet)) {
-			snippet = adResult.get(0).getDescription();
+			snippet = adResult.get(index).getDescription();
 		}
-		return snippet;
+		return snippet;*/
 	}
 
 	public boolean validateRequest(String query, String advLink) {
 		// TODO Auto-generated method stub
 		SolrQuery solrQuery = new SolrQuery();
 		String fileID = fileToUrl.get(advLink);
+		if(fileID == null) {
+			return false;
+		}
 		QueryResponse rsp = null;
 		solrQuery.setParam("q", query);
 		solrQuery.setParam("fl", "id");

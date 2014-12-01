@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.solr.client.solrj.response.QueryResponse;
 
+import edu.buffalo.ktmb.bean.AdResult;
 import edu.buffalo.ktmb.bean.QueryResult;
 import edu.buffalo.ktmb.server.AdServer;
 import edu.buffalo.ktmb.server.SearchServer;
@@ -61,18 +62,27 @@ public class SearchServlet extends HttpServlet {
 				List<String> adSnippetList = new ArrayList<String>();
 				// retrieve ads list for user query and update query hits 
 				List<String> adList = queryService.getAdsForQuery(userQuery);
+				List<String> adTitleList = new ArrayList<String>();
 				for(String ad:adList){
 					String adSnippet = "";
+					String adTitle = ad;
+					AdResult adResult = null;
 					if(!ad.equals("")){
-						adSnippet = adServer.getAdSnippet(ad);
+						adResult = adServer.getAdSnippet(ad);
+					}
+					if(adResult != null) {
+						adSnippet = adResult.getDescription();
+						adTitle = adResult.getTitle();
 					}
 					adSnippetList.add(adSnippet);
+					adTitleList.add(adTitle);
 				}
 				
 				// highlighting parameters
 				hl = rsp.getHighlighting();
 				request.setAttribute("snippetMap", hl);
 				request.setAttribute("adList", adList);
+				request.setAttribute("adTitleList", adTitleList);
 				request.setAttribute("adSnippetList", adSnippetList);
 				request.setAttribute("userQuery",userQuery);
 				request.getRequestDispatcher("/HomePage.jsp").forward(request, response);

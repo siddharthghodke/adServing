@@ -29,7 +29,7 @@
 		
 		<p style="font-family: sans-serif;font-size: 22px">Query Details:</p>
 		
-		<table style="font-family: sans-serif;font-size: 18px" border="1px solid black">
+		<table style="font-family: sans-serif;font-size: 18px" border="1px solid black" cellpadding="7">
 		
 		<tr>
 		<td>Query:</td><td> <%=query.getQuery() %> </td>
@@ -41,10 +41,10 @@
 		<td>Ad Hits:</td><td> <%=query.getAdHits() %> </td>
 		</tr>
 		<tr>
-		<td>Minumum Bidding Price:</td><td> <%=query.getMinBidPrice() %> </td>
+		<td>Minumum Bidding Price:</td><td> $<%=(float)query.getMinBidPrice()/100 %> </td>
 		</tr>
 		<tr>
-		<td>Suggested Bidding Price:</td><td> <%=query.getSuggestedBidPrice() %> </td>
+		<td>Suggested Bidding Price:</td><td> $<%=(float)query.getSuggestedBidPrice()/100 %> </td>
 		</tr>
 		</table>
 		<%

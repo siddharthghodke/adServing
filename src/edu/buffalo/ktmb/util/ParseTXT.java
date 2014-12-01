@@ -16,7 +16,7 @@ public class ParseTXT {
 		String temp;
 		BufferedReader br;
 		try {
-			br = new BufferedReader(new FileReader("E:/webpages-dataset-1.txt"));
+			br = new BufferedReader(new FileReader(StringConstant.PARSE_FILE));
 
 			fileToUrl = new HashMap<String,String> ();
 
